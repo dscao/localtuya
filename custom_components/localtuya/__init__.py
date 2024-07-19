@@ -269,17 +269,20 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
 
     async def setup_entities():
         platforms = set(entity[CONF_PLATFORM] for entity in entry.data[CONF_ENTITIES])
-        await asyncio.gather(
-            *[
-                hass.config_entries.async_forward_entry_setup(entry, platform)
-                for platform in platforms
-            ]
-        )
+        # await asyncio.gather(
+            # *[
+                # hass.config_entries.async_forward_entry_setup(entry, platform)
+                # for platform in platforms
+            # ]
+        # )
+        await hass.config_entries.async_forward_entry_setups(entry, platforms)
         device.async_connect()
+        
 
     await async_remove_orphan_entities(hass, entry)
 
-    hass.async_create_task(setup_entities())
+    #hass.async_create_task(setup_entities())
+    await setup_entities()
 
     return True
 
